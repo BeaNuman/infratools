@@ -7,10 +7,7 @@ import subprocess
 import urllib3
 
 if "VAULT_DEPLOYMENT_TOKEN" not in os.environ:
-    raise OSError(
-        "The environment variable VAULT_DEPLOYMENT_TOKEN \
-    must be set."
-    )
+    raise OSError("The environment variable VAULT_DEPLOYMENT_TOKEN must be set.")
 
 VAULT_DEPLOYMENT_TOKEN = os.getenv("VAULT_DEPLOYMENT_TOKEN")
 
