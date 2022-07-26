@@ -39,10 +39,13 @@ if vault_secret_request.status != 200:
         f"Request to Vault failed with status code {vault_secret_request.status}"
     )
 
-secret_payload = json.loads(vault_secret_request.data.decode("utf-8"))["data"]["data"]
+try:
+    payload = json.loads(vault_secret_request.data.decode("utf-8"))["data"]["data"]
+except Exception as e:
+    raise Exception(f"Failed to parse Vault payload with error: {e}")
 
 heroku_subprocess_environment = os.environ.copy()
-heroku_subprocess_environment.update(secret_payload)
+heroku_subprocess_environment.update(payload)
 
 subprocess_command = arguments.launch_command.split(" ")
 
