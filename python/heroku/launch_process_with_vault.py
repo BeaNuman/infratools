@@ -57,9 +57,7 @@ def main():
     heroku_subprocess_environment = os.environ.copy()
     heroku_subprocess_environment.update(payload)
 
-    subprocess_command = arguments.launch_command
-
-    subprocess.run(subprocess_command, env=heroku_subprocess_environment)
+    subprocess.run(arguments.launch_command, env=heroku_subprocess_environment)
 
 
 if __name__ == "__main__":
