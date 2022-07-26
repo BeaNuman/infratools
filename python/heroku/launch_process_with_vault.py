@@ -26,7 +26,7 @@ def main():
     parser.add_argument("--vault-address", type=str, required=True)
     parser.add_argument("--vault-namespace-path", type=str, required=True)
     parser.add_argument("--vault-secret-path", type=str, required=True)
-    parser.add_argument("--launch-command", type=str, required=True)
+    parser.add_argument("--launch-command", required=True, nargs="+")
 
     arguments = parser.parse_args()
 
@@ -57,7 +57,7 @@ def main():
     heroku_subprocess_environment = os.environ.copy()
     heroku_subprocess_environment.update(payload)
 
-    subprocess_command = arguments.launch_command.split(" ")
+    subprocess_command = arguments.launch_command
 
     subprocess.run(subprocess_command, env=heroku_subprocess_environment)
 
