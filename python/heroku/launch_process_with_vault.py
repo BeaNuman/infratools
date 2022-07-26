@@ -23,10 +23,27 @@ def main():
 
     parser = argparse.ArgumentParser()
 
-    parser.add_argument("--vault-address", type=str, required=True)
-    parser.add_argument("--vault-namespace-path", type=str, required=True)
-    parser.add_argument("--vault-secret-path", type=str, required=True)
-    parser.add_argument("--launch-command", required=True, nargs="+")
+    parser.add_argument(
+        "--vault-address",
+        type=str,
+        required=True,
+        help="The full URI to the Vault cluster",
+    )
+    parser.add_argument(
+        "--vault-namespace-path",
+        type=str,
+        required=True,
+        help="The path to the namespace in the Vault cluster",
+    )
+    parser.add_argument(
+        "--vault-secret-path",
+        type=str,
+        required=True,
+        help="The path to the secret store in the Vault cluster",
+    )
+    parser.add_argument(
+        "--launch-command", required=True, nargs="+", help="The command to run"
+    )
 
     arguments = parser.parse_args()
 
