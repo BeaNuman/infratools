@@ -10,8 +10,7 @@ environment variables set.
 import json
 import os
 
-import urllib3
-
+import urllib.request
 
 def main():
     if "VAULT_DEPLOYMENT_TOKEN" not in os.environ:
@@ -31,27 +30,27 @@ def main():
     VAULT_KV_STORE = os.getenv("VAULT_KV_STORE")
     VAULT_SECRET = os.getenv("VAULT_SECRET")
 
-    http_pool = urllib3.PoolManager()
 
     try:
-        vault_secret_request = http_pool.request(
-            "GET",
-            f"{VAULT_ADDRESS}/v1/{VAULT_KV_STORE}/data/{VAULT_SECRET}",
+        req = urllib.request.Request(
+            method='GET',
+            url=f"{VAULT_ADDRESS}/v1/{VAULT_KV_STORE}/data/{VAULT_SECRET}",
             headers={
                 "X-Vault-Namespace": VAULT_NAMESPACE,
                 "X-Vault-Token": VAULT_DEPLOYMENT_TOKEN,
             },
         )
+        vault_secret_response = urllib.request.urlopen(req)
     except Exception as e:
         raise Exception(f"Attempt to reach Vault failed with error: {e}")
 
-    if vault_secret_request.status != 200:
+    if vault_secret_response.getcode() != 200:
         raise Exception(
-            f"Request to Vault failed with status code {vault_secret_request.status}"
+            f"Request to Vault failed with status code {vault_secret_response.getcode()}"
         )
 
     try:
-        payload = json.loads(vault_secret_request.data.decode("utf-8"))["data"]["data"]
+        payload = json.loads(vault_secret_response.read().decode("utf-8"))["data"]["data"]
     except Exception as e:
         raise Exception(f"Failed to parse Vault payload with error: {e}")
 
