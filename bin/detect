@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# Always detect if this buildpack is included
+exit 0
