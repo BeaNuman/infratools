@@ -9,6 +9,7 @@ environment variables set.
 """
 import json
 import os
+import sys
 
 import urllib.request
 
@@ -54,7 +55,8 @@ def main():
     except Exception as e:
         raise Exception(f"Failed to parse Vault payload with error: {e}")
 
-    print('\n'.join(f"{key}={value}" for key, value in payload.items()))
+    if not sys.stdout.isatty():
+        print('\n'.join(f"{key}={value}" for key, value in payload.items()))
 
 if __name__ == "__main__":
     main()
