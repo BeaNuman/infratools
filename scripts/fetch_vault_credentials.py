@@ -30,7 +30,7 @@ def main():
     secret = fetch_secret(VAULT_ADDRESS, vault_token, VAULT_NAMESPACE, VAULT_KV_STORE, VAULT_SECRET)
 
     if not sys.stdout.isatty():
-        print('\n'.join(f"{key}={value}" for key, value in secret.items()))
+        print('export ' + ' '.join(f"'{key}'='{value}'" for key, value in secret.items()))
 
 def fetch_token(vault_address, role_namespace, role_id, role_secret):
     try:
