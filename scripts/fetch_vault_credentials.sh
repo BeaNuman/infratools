@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
-for var in $(/app/.profile.d/fetch_vault_credentials.py); do
+SCRIPTPATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+for var in $($SCRIPTPATH/fetch_vault_credentials.py); do
   export $var
 done

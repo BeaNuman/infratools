@@ -1,0 +1,1 @@
+pytest-httpserver==1.0.4
