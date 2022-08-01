@@ -1,9 +1,10 @@
 import os
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock
+from unittest.mock import patch
 from urllib.error import HTTPError
-import pytest
 
 import fetch_vault_credentials
+import pytest
 
 VAULT_ENV_VARS = {
     "VAULT_ROLE_NAMESPACE": "namespace",
@@ -15,81 +16,121 @@ VAULT_ENV_VARS = {
     "VAULT_SECRET": "secret",
 }
 
+
 @pytest.mark.parametrize("omit_env_var", VAULT_ENV_VARS.keys())
 def test_env_vars_are_required(omit_env_var):
-    with patch.dict(os.environ, {k: v for k, v in VAULT_ENV_VARS.items() if k != omit_env_var}, clear=True):
-        with pytest.raises(OSError, match=f"The environment variable {omit_env_var} must be set."):
+    with patch.dict(
+        os.environ,
+        {k: v for k, v in VAULT_ENV_VARS.items() if k != omit_env_var},
+        clear=True,
+    ):
+        with pytest.raises(
+            OSError, match=f"The environment variable {omit_env_var} must be set."
+        ):
             fetch_vault_credentials.main()
 
-@patch('urllib.request.urlopen')
+
+@patch("urllib.request.urlopen")
 def test_token_fetched_correctly(mock_urlopen):
     token_mock = MagicMock()
-    token_mock.read.return_value = '{ "auth": { "client_token": "xyz-789" } }'.encode()
+    token_mock.read.return_value = b'{ "auth": { "client_token": "xyz-789" } }'
     mock_urlopen.return_value = token_mock
 
-    token = fetch_vault_credentials.fetch_token("https://vault.test:1000", "namespace", "abc-123", "def-345")
+    token = fetch_vault_credentials.fetch_token(
+        "https://vault.test:1000", "namespace", "abc-123", "def-345"
+    )
     assert token == "xyz-789"
 
-@patch('urllib.request.urlopen')
+
+@patch("urllib.request.urlopen")
 def test_token_fetching_fails(mock_urlopen):
-    mock_urlopen.side_effect = HTTPError('https://vault.test:1000/v1/auth/approle/login', 403, 'Unauthorized', {}, None)
+    mock_urlopen.side_effect = HTTPError(
+        "https://vault.test:1000/v1/auth/approle/login", 403, "Unauthorized", {}, None
+    )
 
-    with pytest.raises(Exception, match="Error fetching Vault AppRole token: HTTP Error 403: Unauthorized"):
-        fetch_vault_credentials.fetch_token("https://vault.test:1000", "namespace", "abc-123", "def-345")
+    with pytest.raises(
+        Exception,
+        match="Error fetching Vault AppRole token: HTTP Error 403: Unauthorized",
+    ):
+        fetch_vault_credentials.fetch_token(
+            "https://vault.test:1000", "namespace", "abc-123", "def-345"
+        )
 
-@patch('urllib.request.urlopen')
+
+@patch("urllib.request.urlopen")
 def test_token_json_decoding_fails(mock_urlopen):
     token_mock = MagicMock()
-    token_mock.read.return_value = '{ "auth": { "client_token": "xyz-789" }'.encode()
+    token_mock.read.return_value = b'{ "auth": { "client_token": "xyz-789" }'
     mock_urlopen.return_value = token_mock
 
-    with pytest.raises(Exception, match="Error decoding Vault AppRole token from response"):
-        fetch_vault_credentials.fetch_token("https://vault.test:1000", "namespace", "abc-123", "def-345")
+    with pytest.raises(
+        Exception, match="Error decoding Vault AppRole token from response"
+    ):
+        fetch_vault_credentials.fetch_token(
+            "https://vault.test:1000", "namespace", "abc-123", "def-345"
+        )
 
-@patch('urllib.request')
+
+@patch("urllib.request")
 def test_secret_fetched_correctly(mock_request):
     secret_mock = MagicMock()
-    secret_mock.read.return_value = '''{
+    secret_mock.read.return_value = b"""{
         "data": {
             "data": {
                 "KEY1": "VALUE1",
                 "KEY2": "VALUE2"
             }
         }
-    }'''.encode()
+    }"""
     mock_request.urlopen.return_value = secret_mock
 
     with patch.dict(os.environ, VAULT_ENV_VARS):
-        secret = fetch_vault_credentials.fetch_secret("https://vault.test:1000", "xyz-789", "namespace", "kv", "secret")
+        secret = fetch_vault_credentials.fetch_secret(
+            "https://vault.test:1000", "xyz-789", "namespace", "kv", "secret"
+        )
 
-    assert secret == {'KEY1': 'VALUE1', 'KEY2': 'VALUE2'}
+    assert secret == {"KEY1": "VALUE1", "KEY2": "VALUE2"}
 
-@patch('urllib.request.urlopen')
+
+@patch("urllib.request.urlopen")
 def test_secret_fetching_fails(mock_urlopen):
-    mock_urlopen.side_effect = HTTPError('https://vault.test:1000/v1/kv/data/secret', 403, 'Unauthorized', {}, None)
+    mock_urlopen.side_effect = HTTPError(
+        "https://vault.test:1000/v1/kv/data/secret", 403, "Unauthorized", {}, None
+    )
 
-    with pytest.raises(Exception, match="Error fetching Vault secret: HTTP Error 403: Unauthorized"):
-        fetch_vault_credentials.fetch_secret("https://vault.test:1000", "xyz-789", "namespace", "kv", "secret")
+    with pytest.raises(
+        Exception, match="Error fetching Vault secret: HTTP Error 403: Unauthorized"
+    ):
+        fetch_vault_credentials.fetch_secret(
+            "https://vault.test:1000", "xyz-789", "namespace", "kv", "secret"
+        )
 
-@patch('urllib.request.urlopen')
+
+@patch("urllib.request.urlopen")
 def test_secret_json_decoding_fails(mock_urlopen):
     secret_mock = MagicMock()
-    secret_mock.read.return_value = '''{
+    secret_mock.read.return_value = b"""{
         "data": {
             "data": {
                 "KEY1": "VALUE1",
                 "KEY2": "VALUE2"
             }
-    }'''.encode()
+    }"""
     mock_urlopen.return_value = secret_mock
 
     with pytest.raises(Exception, match="Error decoding Vault secret from response"):
-        fetch_vault_credentials.fetch_secret("https://vault.test:1000", "xyz-789", "namespace", "kv", "secret")
+        fetch_vault_credentials.fetch_secret(
+            "https://vault.test:1000", "xyz-789", "namespace", "kv", "secret"
+        )
 
-@patch('fetch_vault_credentials.fetch_token', return_value="xyz-789")
-@patch('fetch_vault_credentials.fetch_secret', return_value={'KEY1': 'VALUE1', 'KEY2': 'VALUE2'})
-@patch('builtins.print')
-@patch('sys.stdout')
+
+@patch("fetch_vault_credentials.fetch_token", return_value="xyz-789")
+@patch(
+    "fetch_vault_credentials.fetch_secret",
+    return_value={"KEY1": "VALUE1", "KEY2": "VALUE2"},
+)
+@patch("builtins.print")
+@patch("sys.stdout")
 def test_secret_is_printed_when_stdout_is_not_a_tty(mock_stdout, mock_print, _, __):
     mock_stdout.isatty.return_value = False
 
@@ -98,10 +139,14 @@ def test_secret_is_printed_when_stdout_is_not_a_tty(mock_stdout, mock_print, _, 
 
     mock_print.assert_called_once_with("export 'KEY1'='VALUE1' 'KEY2'='VALUE2'")
 
-@patch('fetch_vault_credentials.fetch_token', return_value="xyz-789")
-@patch('fetch_vault_credentials.fetch_secret', return_value={'KEY1': 'VALUE1', 'KEY2': 'VALUE2'})
-@patch('builtins.print')
-@patch('sys.stdout')
+
+@patch("fetch_vault_credentials.fetch_token", return_value="xyz-789")
+@patch(
+    "fetch_vault_credentials.fetch_secret",
+    return_value={"KEY1": "VALUE1", "KEY2": "VALUE2"},
+)
+@patch("builtins.print")
+@patch("sys.stdout")
 def test_secret_is_not_printed_when_stdout_is_a_tty(mock_stdout, mock_print, _, __):
     mock_stdout.isatty.return_value = True
 
