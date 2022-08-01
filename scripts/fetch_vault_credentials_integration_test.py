@@ -26,8 +26,10 @@ def test_variables_are_sourced_correctly(httpserver):
     stdout = subprocess.run(
         [
             (
+                f"bash -c '"
                 f"source {os.path.dirname(__file__)}/fetch_vault_credentials.sh &&"
                 f'echo "KEY1 value is $KEY1, KEY2 value is $KEY2"'
+                f"'"
             )
         ],
         check=True,
@@ -49,7 +51,7 @@ def test_variables_are_not_printed(httpserver):
     env = {"VAULT_ADDRESS": httpserver.url_for("")} | VAULT_ENV_VARS
 
     stdout = subprocess.run(
-        [f"source {os.path.dirname(__file__)}/fetch_vault_credentials.sh"],
+        [f"bash -c 'source {os.path.dirname(__file__)}/fetch_vault_credentials.sh'"],
         check=True,
         shell=True,
         capture_output=True,
