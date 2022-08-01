@@ -1,7 +1,7 @@
 # Heroku Buildpack: Populate `bash` environment from Vault
 
-This buildpack populates `$BUILD_DIR/.profile.d` (with $BUILD_DIR set by the upstream build platform) 
-with a number of utility scripts to fetch secrets from a Vault cluster and `export` them into a system's 
+This buildpack populates `$BUILD_DIR/.profile.d` (with $BUILD_DIR set by the upstream build platform)
+with a number of utility scripts to fetch secrets from a Vault cluster and `export` them into a system's
 environment.
 
 ## Requirements
