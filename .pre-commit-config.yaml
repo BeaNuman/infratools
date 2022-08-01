@@ -4,17 +4,17 @@ repos:
     hooks:
       - id: pyupgrade
         args: [--py37-plus]
-        files: ^python/
+        files: ^scripts/
   - repo: https://github.com/asottile/reorder_python_imports
     rev: v3.1.0
     hooks:
       - id: reorder-python-imports
-        files: ^python/
+        files: ^scripts/
   - repo: https://github.com/ambv/black
     rev: 22.3.0
     hooks:
       - id: black
-        files: ^python/
+        files: ^scripts/
   - repo: https://gitlab.com/pycqa/flake8
     rev: 3.9.2
     hooks:
@@ -25,32 +25,40 @@ repos:
           flake8-comprehensions,
         ]
         args: ["--suppress-none-returning"]
-        files: ^python/
+        files: ^scripts/
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.2.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
       - id: debug-statements
-        files: ^python/
+        files: ^scripts/
   - repo: https://github.com/myint/docformatter
     rev: v1.4
     hooks:
       - id: docformatter
         args: ["--in-place", "--pre-summary-newline"]
-        files: ^python/
+        files: ^scripts/
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v0.942
     hooks:
       - id: mypy
         additional_dependencies: []
-        files: ^python/
+        files: ^scripts/
   - repo: https://github.com/PyCQA/doc8
     rev: 0.11.1
     hooks:
       - id: doc8
-        files: ^python/
+        files: ^scripts/
   - repo: https://github.com/jumanjihouse/pre-commit-hooks
     rev: 2.1.6
     hooks:
       - id: markdownlint
+  - repo: local
+    hooks:
+      - id: pytest-check
+        name: pytest-check
+        entry: pytest
+        language: system
+        pass_filenames: false
+        always_run: true

@@ -1,0 +1,4 @@
+#!/bin/sh
+
+# This buildpack should never provide any release metadata
+exit 0
