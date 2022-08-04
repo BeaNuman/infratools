@@ -2,10 +2,11 @@
 
 SCRIPTPATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
-SCRIPT_OUTPUT=$($SCRIPTPATH/fetch_vault_credentials.py)
+PYTHON_SCRIPT_OUTPUT=$($SCRIPTPATH/fetch_vault_credentials.py)
+PYTHON_SCRIPT_EXIT_CODE=$?
 
-if [ $? == 0 ]; then
-    eval "${SCRIPT_OUTPUT}"
+if [ ${PYTHON_SCRIPT_EXIT_CODE} == 0 ]; then
+    eval "${PYTHON_SCRIPT_OUTPUT}"
 else
-    exit $?
+    exit ${PYTHON_SCRIPT_EXIT_CODE}
 fi
