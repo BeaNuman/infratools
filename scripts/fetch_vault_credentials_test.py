@@ -154,3 +154,19 @@ def test_secret_is_not_printed_when_stdout_is_a_tty(mock_stdout, mock_print, _, 
         fetch_vault_credentials.main()
 
     mock_print.assert_not_called()
+
+
+@patch("fetch_vault_credentials.fetch_token", return_value="xyz-789")
+@patch(
+    "fetch_vault_credentials.fetch_secret",
+    return_value={"KEY1": "VALUE1", "Key2": "VALUE2"},
+)
+def test_returned_secret_with_invalid_keyword_set(_, __):
+
+    with patch.dict(os.environ, VAULT_ENV_VARS):
+        with pytest.raises(
+            ValueError,
+            match="The supplied keyword Key2 is invalid, and must "
+            "consist only of uppercase letters, numbers and underscores",
+        ):
+            fetch_vault_credentials.main()
