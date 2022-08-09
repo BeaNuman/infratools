@@ -8,6 +8,7 @@ the VAULT_* environment variables.
 """
 import json
 import os
+import shlex
 import sys
 import urllib.request
 
@@ -42,8 +43,21 @@ def main():
 
     if not sys.stdout.isatty():
         print(
-            "export " + " ".join(f"'{key}'='{value}'" for key, value in secret.items())
+            "export "
+            + " ".join(
+                f"{sanitise_value(key)}={sanitise_value(value)}"
+                for key, value in secret.items()
+            )
         )
+
+
+def sanitise_value(value):
+    value = shlex.quote(value)
+
+    if all((value.startswith("'"), value.endswith("'"))):
+        return value
+    else:
+        return f"'{value}'"
 
 
 def fetch_token(vault_address, role_namespace, role_id, role_secret):
