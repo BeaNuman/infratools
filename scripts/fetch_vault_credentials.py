@@ -8,6 +8,7 @@ the VAULT_* environment variables.
 """
 import json
 import os
+import re
 import shlex
 import sys
 import urllib.request
@@ -45,19 +46,29 @@ def main():
         print(
             "export "
             + " ".join(
-                f"{sanitise_value(key)}={sanitise_value(value)}"
+                f"{validate_and_sanitise_key(key)}={sanitise_value(value)}"
                 for key, value in secret.items()
             )
         )
 
 
-def sanitise_value(value):
-    value = shlex.quote(value)
-
-    if all((value.startswith("'"), value.endswith("'"))):
-        return value
+def validate_and_sanitise_key(input):
+    if re.search("^[A-Z0-9_]+$", input):
+        return f"'{input}'"
     else:
-        return f"'{value}'"
+        raise ValueError(
+            f"The supplied keyword {input} is invalid, and must consist only of "
+            f"uppercase letters, numbers and underscores"
+        )
+
+
+def sanitise_value(input):
+    input = shlex.quote(input)
+
+    if all((input.startswith("'"), input.endswith("'"))):
+        return input
+    else:
+        return f"'{input}'"
 
 
 def fetch_token(vault_address, role_namespace, role_id, role_secret):
