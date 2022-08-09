@@ -58,7 +58,7 @@ def validate_and_sanitise_key(input):
     else:
         raise ValueError(
             f"The supplied keyword {input} is invalid, and must consist only of "
-            f"uppercase letters, numbers and underscores"
+            "uppercase letters, numbers and underscores"
         )
 
 
