@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+exit 1
+
 BUILD_DIR=$1
 BP_DIR=$(cd "$(dirname "${0:-}")"; cd ..; pwd)
 
