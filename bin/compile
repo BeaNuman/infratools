@@ -21,10 +21,10 @@ export VAULT_ROLE_SECRET=\$(cat $ENV_DIR/VAULT_ROLE_SECRET)
 export VAULT_SECRET=\$(cat $ENV_DIR/VAULT_SECRET)
 export VAULT_SECRET=\$(cat $ENV_DIR/THIS_SHOULD_BREAK)
 
-echo ${VAULT_ADDRESS}
-echo ${VAULT_KV_STORE}
-echo ${VAULT_NAMESPACE}
-echo ${VAULT_ROLE_NAMESPACE}
+echo \${VAULT_ADDRESS}
+echo \${VAULT_KV_STORE}
+echo \${VAULT_NAMESPACE}
+echo \${VAULT_ROLE_NAMESPACE}
 
 cd ${BUILD_DIR}/.profile.d/
 ./fetch_vault_credentials.sh
