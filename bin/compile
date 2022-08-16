@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
-BUILD_DIR=$PWD
-ENV_DIR=$PWD/env
+BUILD_DIR=$1
+ENV_DIR=$3
 
 BP_DIR=$(cd "$(dirname "${0:-}")"; cd ..; pwd)
 
