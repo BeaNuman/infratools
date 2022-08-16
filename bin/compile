@@ -22,13 +22,13 @@ for e in \$(ls $ENV_DIR); do
 done
 fi
 
-export VAULT_ADDRESS=test
-export VAULT_KV_STORE=test
-export VAULT_NAMESPACE=test
-export VAULT_ROLE_ID=test
-export VAULT_ROLE_NAMESPACE=test
-export VAULT_ROLE_SECRET=test
-export VAULT_SECRET=test
+export VAULT_ADDRESS=\$(cat $ENV_DIR/VAULT_ADDRESS)
+export VAULT_KV_STORE=\$(cat $ENV_DIR/VAULT_KV_STORE)
+export VAULT_NAMESPACE=\$(cat $ENV_DIR/VAULT_NAMESPACE)
+export VAULT_ROLE_ID=\$(cat $ENV_DIR/VAULT_ROLE_ID)
+export VAULT_ROLE_NAMESPACE=\$(cat $ENV_DIR/VAULT_ROLE_NAMESPACE)
+export VAULT_ROLE_SECRET=\$(cat $ENV_DIR/VAULT_ROLE_SECRET)
+export VAULT_SECRET=\$(cat $ENV_DIR/VAULT_SECRET)
 
 cd ${BUILD_DIR}/.profile.d/
 ./fetch_vault_credentials.sh
