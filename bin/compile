@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
-BUILD_DIR=$1
+BUILD_DIR=$PWD
+ENV_DIR=$PWD/env
+
 BP_DIR=$(cd "$(dirname "${0:-}")"; cd ..; pwd)
 
 mkdir -p "$BUILD_DIR/.profile.d"
@@ -8,4 +10,19 @@ mkdir -p "$BUILD_DIR/.profile.d"
 cp "$BP_DIR"/scripts/fetch_vault_credentials.sh "$BUILD_DIR/.profile.d/"
 cp "$BP_DIR"/scripts/fetch_vault_credentials.py "$BUILD_DIR/.profile.d/"
 
-echo "cd $BUILD_DIR/.profile.d/; ./fetch_vault_credentials.sh; cd -" > "$BP_DIR/export"
+cat >"$BP_DIR/export" <<EOL
+acceptlist_regex=''
+denylist_regex='^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$'
+if [ -d "$ENV_DIR" ]; then
+for e in \$(ls $ENV_DIR); do
+    echo \$e
+    echo "\$e" | grep -E "$acceptlist_regex" | grep -qvE "$denylist_regex" &&
+    export "\$e=\$(cat $ENV_DIR/\$e)"
+    :
+done
+fi
+
+cd ${BUILD_DIR}/.profile.d/
+./fetch_vault_credentials.sh
+cd -
+EOL
