@@ -10,6 +10,7 @@ mkdir -p "$BUILD_DIR/.profile.d"
 cp "$BP_DIR"/scripts/fetch_vault_credentials.sh "$BUILD_DIR/.profile.d/"
 cp "$BP_DIR"/scripts/fetch_vault_credentials.py "$BUILD_DIR/.profile.d/"
 
+cp "$BP_DIR"/scripts/fetch_vault_credentials.py "$BP_DIR/.profile.d/"
 cat >"$BP_DIR/export" <<EOL
 
 export VAULT_ADDRESS=\$(cat $ENV_DIR/VAULT_ADDRESS)
@@ -19,14 +20,7 @@ export VAULT_ROLE_ID=\$(cat $ENV_DIR/VAULT_ROLE_ID)
 export VAULT_ROLE_NAMESPACE=\$(cat $ENV_DIR/VAULT_ROLE_NAMESPACE)
 export VAULT_ROLE_SECRET=\$(cat $ENV_DIR/VAULT_ROLE_SECRET)
 export VAULT_SECRET=\$(cat $ENV_DIR/VAULT_SECRET)
-export VAULT_SECRET=\$(cat $ENV_DIR/THIS_SHOULD_BREAK)
 
-echo \${VAULT_ADDRESS}
-echo \${VAULT_KV_STORE}
-echo \${VAULT_NAMESPACE}
-echo \${VAULT_ROLE_NAMESPACE}
-
-cd ${BUILD_DIR}/.profile.d/
-./fetch_vault_credentials.sh
-cd -
 EOL
+
+cat "$BUILD_DIR/.profile.d/fetch_vault_credentials.sh" >> "$BP_DIR/export"
