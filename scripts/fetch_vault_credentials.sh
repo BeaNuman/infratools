@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 
+echo "Fetching Vault credentials..."
 SCRIPTPATH="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 PYTHON_SCRIPT_OUTPUT=$($SCRIPTPATH/fetch_vault_credentials.py)
