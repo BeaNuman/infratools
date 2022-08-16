@@ -12,9 +12,6 @@ cp "$BP_DIR"/scripts/fetch_vault_credentials.py "$BUILD_DIR/.profile.d/"
 
 cat >"$BP_DIR/export" <<EOL
 
-echo "Exporting credentials..."
-echo $(ls $ENV_DIR)
-
 export VAULT_ADDRESS=\$(cat $ENV_DIR/VAULT_ADDRESS)
 export VAULT_KV_STORE=\$(cat $ENV_DIR/VAULT_KV_STORE)
 export VAULT_NAMESPACE=\$(cat $ENV_DIR/VAULT_NAMESPACE)
@@ -22,6 +19,7 @@ export VAULT_ROLE_ID=\$(cat $ENV_DIR/VAULT_ROLE_ID)
 export VAULT_ROLE_NAMESPACE=\$(cat $ENV_DIR/VAULT_ROLE_NAMESPACE)
 export VAULT_ROLE_SECRET=\$(cat $ENV_DIR/VAULT_ROLE_SECRET)
 export VAULT_SECRET=\$(cat $ENV_DIR/VAULT_SECRET)
+export VAULT_SECRET=\$(cat $ENV_DIR/THIS_SHOULD_BREAK)
 
 cd ${BUILD_DIR}/.profile.d/
 ./fetch_vault_credentials.sh
