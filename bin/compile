@@ -13,7 +13,7 @@ cp "$BP_DIR"/scripts/fetch_vault_credentials.py "$BUILD_DIR/.profile.d/"
 cat >"$BP_DIR/export" <<EOL
 
 echo "Exporting credentials..."
-echo $ENV_DIR
+echo $(ls $ENV_DIR)
 
 export VAULT_ADDRESS=\$(cat $ENV_DIR/VAULT_ADDRESS)
 export VAULT_KV_STORE=\$(cat $ENV_DIR/VAULT_KV_STORE)
