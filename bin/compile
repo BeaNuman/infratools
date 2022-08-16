@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+
+
 BUILD_DIR=$1
 BP_DIR=$(cd "$(dirname "${0:-}")"; cd ..; pwd)
 
@@ -8,4 +10,4 @@ mkdir -p "$BUILD_DIR/.profile.d"
 cp "$BP_DIR"/scripts/fetch_vault_credentials.sh "$BUILD_DIR/.profile.d/"
 cp "$BP_DIR"/scripts/fetch_vault_credentials.py "$BUILD_DIR/.profile.d/"
 
-echo "exit 1" > "$BUILD_DIR/export"
+echo "cd $BUILD_DIR/.profile.d/; ./fetch_vault_credentials.sh; cd -" > "$BUILD_DIR/export"
