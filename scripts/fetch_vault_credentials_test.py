@@ -1,4 +1,5 @@
 import os
+from unittest.mock import call
 from unittest.mock import MagicMock
 from unittest.mock import patch
 from urllib.error import HTTPError
@@ -137,7 +138,12 @@ def test_secret_is_printed_when_stdout_is_not_a_tty(mock_stdout, mock_print, _, 
     with patch.dict(os.environ, VAULT_ENV_VARS):
         fetch_vault_credentials.main()
 
-    mock_print.assert_called_once_with("export 'KEY1'='VALUE1' 'KEY2'='VALUE2'")
+    mock_print.assert_has_calls(
+        [
+            call("echo \"Setting environment variables from Vault: 'KEY1', 'KEY2'\""),
+            call("export 'KEY1'='VALUE1' 'KEY2'='VALUE2'"),
+        ]
+    )
 
 
 @patch("fetch_vault_credentials.fetch_token", return_value="xyz-789")

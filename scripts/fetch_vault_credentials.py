@@ -44,6 +44,11 @@ def main():
 
     if not sys.stdout.isatty():
         print(
+            'echo "Setting environment variables from Vault: '
+            + ", ".join(validate_and_sanitise_key(key) for key in secret.keys())
+            + '"'
+        )
+        print(
             "export "
             + " ".join(
                 f"{validate_and_sanitise_key(key)}={sanitise_value(value)}"
