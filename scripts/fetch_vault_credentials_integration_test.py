@@ -37,6 +37,7 @@ def test_variables_are_sourced_correctly(httpserver):
         capture_output=True,
         env=env,
     ).stdout
+    assert "Setting environment variables from Vault: 'KEY1', 'KEY2'" in str(stdout)
     assert "KEY1 value is VALUE1" in str(stdout)
     assert "KEY2 value is VALUE2" in str(stdout)
 
