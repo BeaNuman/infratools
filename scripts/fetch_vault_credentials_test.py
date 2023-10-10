@@ -37,10 +37,10 @@ def test_token_fetched_correctly(mock_urlopen):
     token_mock.read.return_value = b'{ "auth": { "client_token": "xyz-789" } }'
     mock_urlopen.return_value = token_mock
 
-    token = fetch_vault_credentials.fetch_token(
+    token_payload = fetch_vault_credentials.fetch_token(
         "https://vault.test:1000", "namespace", "abc-123", "def-345"
     )
-    assert token == "xyz-789"
+    assert token_payload == {"client_token": "xyz-789", "x_vault_index": None}
 
 
 @patch("urllib.request.urlopen")
@@ -125,7 +125,10 @@ def test_secret_json_decoding_fails(mock_urlopen):
         )
 
 
-@patch("fetch_vault_credentials.fetch_token", return_value="xyz-789")
+@patch(
+    "fetch_vault_credentials.fetch_token",
+    return_value={"client_token": "xyz-789", "x_vault_index": None},
+)
 @patch(
     "fetch_vault_credentials.fetch_secret",
     return_value={"KEY1": "VALUE1", "KEY2": "VALUE2"},
@@ -146,7 +149,10 @@ def test_secret_is_printed_when_stdout_is_not_a_tty(mock_stdout, mock_print, _, 
     )
 
 
-@patch("fetch_vault_credentials.fetch_token", return_value="xyz-789")
+@patch(
+    "fetch_vault_credentials.fetch_token",
+    return_value={"client_token": "xyz-789", "x_vault_index": None},
+)
 @patch(
     "fetch_vault_credentials.fetch_secret",
     return_value={"KEY1": "VALUE1", "KEY2": "VALUE2"},
@@ -162,7 +168,10 @@ def test_secret_is_not_printed_when_stdout_is_a_tty(mock_stdout, mock_print, _, 
     mock_print.assert_not_called()
 
 
-@patch("fetch_vault_credentials.fetch_token", return_value="xyz-789")
+@patch(
+    "fetch_vault_credentials.fetch_token",
+    return_value={"client_token": "xyz-789", "x_vault_index": None},
+)
 @patch(
     "fetch_vault_credentials.fetch_secret",
     return_value={"KEY1": "VALUE1", "Key2": "VALUE2"},
