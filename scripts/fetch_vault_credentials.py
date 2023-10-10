@@ -140,10 +140,7 @@ def fetch_secret(
             req = urllib.request.Request(
                 method="GET",
                 url=f"{vault_address}/v1/{kv_store}/data/{secret}",
-                headers={
-                    "X-Vault-Namespace": namespace,
-                    "X-Vault-Token": vault_token,
-                },
+                headers=secret_request_headers,
             )
             vault_secret_response = urllib.request.urlopen(req, timeout=10)
             return json.loads(vault_secret_response.read().decode("utf-8"))["data"][
