@@ -100,7 +100,7 @@ def fetch_token(vault_address, role_namespace, role_id, role_secret):
                 "utf-8"
             ),
         )
-        vault_token_opener = urllib.request.urlopen(req)
+        vault_token_opener = urllib.request.urlopen(req, timeout=10)
         vault_token_response_headers = dict(vault_token_opener.getheaders())
         vault_token_response_body = vault_token_opener.read()
 
@@ -145,7 +145,7 @@ def fetch_secret(
                     "X-Vault-Token": vault_token,
                 },
             )
-            vault_secret_response = urllib.request.urlopen(req)
+            vault_secret_response = urllib.request.urlopen(req, timeout=10)
             return json.loads(vault_secret_response.read().decode("utf-8"))["data"][
                 "data"
             ]
